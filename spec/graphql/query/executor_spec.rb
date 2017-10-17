@@ -265,6 +265,26 @@ describe GraphQL::Query::Executor do
       end
     end
 
+    describe "when the mutation parameters are passed directly" do
+      let(:variables) { { } }
+      let(:query_string) {%| mutation { replaceValues(input: []) } |}
+      it "returns a variable validation error" do
+        expected = {
+          "errors"=>[
+            {
+              "message" => "Variable input of type ReplaceValuesInput! was provided invalid value. Expected type 'ReplaceValuesInput!'.",
+              "locations" => [{ "line" => 1, "column" => 13 }],
+              "value" => nil,
+              "problems" => [
+                { "path" => [], "explanation" => "Expected value to not be null" }
+              ]
+            }
+          ]
+        }
+        assert_equal(expected, result)
+      end
+    end
+
     describe "for required input object fields" do
       let(:variables) { {"input" => {} } }
       let(:query_string) {%| mutation M($input: ReplaceValuesInput!) { replaceValues(input: $input) } |}
